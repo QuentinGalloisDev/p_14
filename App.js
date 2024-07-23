@@ -7,17 +7,19 @@ import {
 import { Home } from './Pages/Home';
 import { Error } from './Pages/Error';
 import { EmployeeList } from './Pages/EmployeeList'
-import { ThemeProvider } from './Context/ThemeProvider'; // Importer le fournisseur de contexte
+import { EmployeeProvider } from './Context/EmployeeProvider'; // Importer le fournisseur de contexte
+import { Header } from './Componnents/Header';
+import { Footer } from './Componnents/Footer';
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: <div><Header /> <Home /> <Footer /></div>,
     errorElement: <Error />,
   },
   {
     path: 'employee-list',
-    element: <EmployeeList />,
+    element: <div><Header /> <EmployeeList /> <Footer /></div>,
     errorElement: <Error />
   }
 ]);
@@ -26,14 +28,13 @@ function App() {
 
   return (
     // On enveloppe les composants dans le ThemeProvider pour rendre accessible l'état 'theme' dans tout les composants de l'application.
-    <ThemeProvider>
+    <EmployeeProvider>
       <div>
         <div className="App">
-          {/* <Counter /> */}
           <RouterProvider router={router} />
         </div>
       </div>
-    </ThemeProvider>
+    </EmployeeProvider>
   );
 }
 

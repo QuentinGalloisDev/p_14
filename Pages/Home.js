@@ -1,29 +1,24 @@
-import React, { useState, useContext } from 'react'
-import styles from '../Styles/Home.module.css'
-import { Header } from '../Componnents/Header';
-import { Footer } from '../Componnents/Footer';
+import React, { useState, useContext } from 'react';
+import styles from '../Styles/Home.module.css';
 import { InputForm } from '../Componnents/InputForm';
-import {
-    Link
-} from "react-router-dom";
+import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
-import '@vaadin/date-picker';
-import { customStyles } from '../Styles/CustomStyleModal'
-import { useForm } from 'react-hook-form';
-import { ThemeContext } from '../Context/ThemeProvider'; // Importer le contexte
-
+import { DatePicker } from '@vaadin/react-components/DatePicker.js';
+import { customStyles } from '../Styles/CustomStyleModal';
+import { useForm, Controller } from 'react-hook-form';
+import { EmployeeContext } from '../Context/EmployeeProvider'; // Importer le contexte
+import { Select } from '../Componnents/Select';
 
 export const Home = () => {
     const [showModal, setShowModal] = useState(false);
-    const { handleSubmit, register } = useForm();
-    // On utilise useContext pour accéder au contexte défini dans le ThemeProvider.
-    const { theme, setTheme } = useContext(ThemeContext);
-    const onSubmit = (data) => {
-        // Stocker un objet dans le context en itérant sur l'objet récupérer dans le hook form
-        setTheme(prevTheme => [...prevTheme, data]);
-        console.log(data)
+    const { handleSubmit, control, register } = useForm();
+    const { employees, setEmployee } = useContext(EmployeeContext);
 
-    }
+    const onSubmit = (data) => {
+        setEmployee(prevEmployee => [...prevEmployee, data]);
+        console.log(data);
+    };
+
     const handleOpenModal = () => {
         setShowModal(true);
     };
@@ -33,12 +28,8 @@ export const Home = () => {
     };
 
     return (
-        // Le theme dans le provider correspond à la variable d'état qui est dans le fichier ThemeProvider.js
-        <ThemeContext.Provider value={theme}>
+        <EmployeeContext.Provider value={employees}>
             <div className={styles.container}>
-                <Name />
-                <Header></Header>
-                {/* Lorsque le formulaire est soumis, handleSubmit appelle la fonction onSubmit avec les données du formulaire (data) */}
                 <form className={styles.createEmployee} onSubmit={handleSubmit(onSubmit)}>
                     <InputForm
                         labelName='firstName'
@@ -52,10 +43,9 @@ export const Home = () => {
                         labelFor='last_name'
                         register={register}
                     />
-                    {/* Mettre 2 date picker ici  */}
                     <div className={styles.date_picker}>
-                        <vaadin-date-picker label="Date de naissance" initialPosition="Start date" clear-button-visible {...register("birthDate")}></vaadin-date-picker>
-                        <vaadin-date-picker label="Date de début" initialPosition="Start date" clear-button-visible {...register("startDate")}></vaadin-date-picker>
+                        <DatePicker label="Date de naissance" initialPosition="Start date" clear-button-visible {...register("birthDate")} />
+                        <DatePicker label="Date de début" initialPosition="Start date" clear-button-visible {...register("startDate")} />
                     </div>
 
                     <div className='adress'>
@@ -71,45 +61,59 @@ export const Home = () => {
                             labelFor='city'
                             register={register}
                         />
-
-                        {/* Mettre le select avec les états ici */}
-
+                        <Controller
+                            name="state"
+                            control={control}
+                            defaultValue=""
+                            render={({ field }) => (
+                                <Select
+                                    label='State'
+                                    options={['a', 'b', 'c', 'd']}
+                                    searchInput={true}
+                                    fadeInDuration={'1.5s'}
+                                    fadeOutDuration={'1.5s'}
+                                    debounceDelay={2500}
+                                    onChange={field.onChange}
+                                    value={field.value}
+                                />
+                            )}
+                        />
                         <InputForm
-                            labelName='ZipCode'
+                            labelName='zipCode'
                             inputType='number'
                             labelFor='zip_code'
                             register={register}
                         />
                     </div>
-                    {/* Mettre le select avec les départements ici */}
 
-                    <div >Home</div>
+                    <Controller
+                        name="department"
+                        control={control}
+                        defaultValue="" // Assurez-vous que le defaultValue est configuré correctement
+                        render={({ field }) => (
+                            <Select
+                                label='Department'
+                                options={['a', 'v', 'c', 's']}
+                                onChange={field.onChange}
+                                value={field.value}
+                            />
+                        )}
+                    />
+
+                    <div>Home</div>
                     <Link to='employee-list'>Employee List</Link>
-                    <button onClick={handleOpenModal}>Save Employee</button>
+                    <button type="submit" onClick={handleOpenModal}>Save Employee</button>
                     <Modal
                         isOpen={showModal}
                         contentLabel="Minimal Modal Example"
                         style={customStyles}
                         appElement={document.getElementById('root')}
                     >
-                        <p>Employee created !</p>
+                        <p>Employee created!</p>
                         <button onClick={handleCloseModal}>Close Modal</button>
                     </Modal>
                 </form>
-
-                <Footer />
             </div>
-        </ThemeContext.Provider>
-
-    )
-}
-
-export const Name = () => {
-    const { theme } = useContext(ThemeContext);
-
-    return (
-        <div>
-            {theme && theme.length > 0 ? <p>{theme[theme.length - 1].firstName}</p> : <p>No employees yet</p>}
-        </div>
+        </EmployeeContext.Provider>
     );
 };
