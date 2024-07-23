@@ -41,18 +41,26 @@ export const Select = ({ options, label, searchInput, fadeInDuration, fadeOutDur
             setSelectedOption(options[0]);
         }
     }, [value, options, selectedOption]);
+    // Fonction pour gérer l'ouverture et la fermeture du menu déroulant en alternant l'état isOpen. 
 
     const toggleDropdown = () => {
-        setIsOpen(prevIsOpen => !prevIsOpen);
+        setIsOpen(!isOpen);
+        // Elle s'assure également que le champ de recherche reçoit le focus lorsque le menu est ouvert, 
+        // pour que l'utilisateur puisse immédiatement commencer à taper une recherche
         if (!isOpen && searchInput) {
             searchInputRef.current.focus();
         }
     };
 
     const handleOptionClick = (option) => {
+        //met à jour l'état selectedOption avec l'option qui a été cliquée
         setSelectedOption(option);
+        //ferme le menu déroulant
         setIsOpen(false);
+        //efface le texte saisi dans le champ de recherche.
         setSearchTerm('');
+        //Si une fonction onChange est fournie en tant que prop, elle est appelée avec l'option sélectionnée.
+        //permet à la fonction parent de gérer les changements de sélection.
         if (onChange) {
             onChange(option); // Appel de la fonction de rappel
         }
@@ -100,7 +108,7 @@ export const Select = ({ options, label, searchInput, fadeInDuration, fadeOutDur
     };
     // Vérifie si l'élément actuellement focalisé (e.relatedTarget) est à l'intérieur du conteneur des options
     const handleBlur = (e) => {
-        //Si ce n'est pas le cas, cela signifie que l'utilisateur a cliqué en dehors de la boîte de sélection et du menu déroulant, donc le menu est fermé.
+        //Si ce n'est pas le cas, cela signifie que l'utilisateur a cliqué en dehors de la boîte de sélection et du menu déroulant, donc le menu se ferme.
         if (optionsContainerRef.current && !optionsContainerRef.current.contains(e.relatedTarget)) {
             setIsOpen(false);
         }
