@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styles from '../Styles/Home.module.css';
+import PropTypes from 'prop-types';
 import { InputForm } from '../Componnents/InputForm';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
@@ -7,7 +8,10 @@ import { DatePicker } from '@vaadin/react-components/DatePicker.js';
 import { customStyles } from '../Styles/CustomStyleModal';
 import { useForm, Controller } from 'react-hook-form';
 import { EmployeeContext } from '../Context/EmployeeProvider'; // Importer le contexte
-import { Select } from '../Componnents/Select';
+// import { Select } from '../Componnents/Select';
+
+// test compo importé
+import { Select } from 'react-select-component-animated/dist/Select';
 
 export const Home = () => {
     const [showModal, setShowModal] = useState(false);
@@ -48,7 +52,7 @@ export const Home = () => {
                         <DatePicker label="Date de début" initialPosition="Start date" clear-button-visible {...register("startDate")} />
                     </div>
 
-                    <div className='adress'>
+                    <div className={styles.adress}>
                         <InputForm
                             labelName='street'
                             inputType='text'
@@ -64,7 +68,7 @@ export const Home = () => {
                         <Controller
                             name="state"
                             control={control}
-                            defaultValue=""
+                            defaultValue="" // Assurez-vous que le defaultValue est configuré comme une string vide
                             render={({ field }) => (
                                 <Select
                                     label='State'
@@ -76,8 +80,11 @@ export const Home = () => {
                                     onChange={field.onChange}
                                     value={field.value}
                                 />
+
                             )}
+
                         />
+
                         <InputForm
                             labelName='zipCode'
                             inputType='number'
@@ -89,13 +96,17 @@ export const Home = () => {
                     <Controller
                         name="department"
                         control={control}
-                        defaultValue="" // Assurez-vous que le defaultValue est configuré correctement
+                        defaultValue="" // Assurez-vous que le defaultValue est configuré comme une string vide
                         render={({ field }) => (
                             <Select
                                 label='Department'
                                 options={['a', 'v', 'c', 's']}
                                 onChange={field.onChange}
                                 value={field.value}
+                                searchInput={true}
+                                fadeInDuration={'1.5s'}
+                                fadeOutDuration={'1.5s'}
+                                debounceDelay={2500}
                             />
                         )}
                     />
@@ -116,4 +127,101 @@ export const Home = () => {
             </div>
         </EmployeeContext.Provider>
     );
+};
+
+Home.propTypes = {
+    /**
+     * employees: Un tableau d'objets représentant les employés.
+     * Exemple :
+     * [
+     *   {
+     *     firstName: "John",
+     *     lastName: "Doe",
+     *     birthDate: "1985-05-15",
+     *     startDate: "2021-01-01",
+     *     street: "123 Main St",
+     *     city: "Springfield",
+     *     state: "Illinois",
+     *     zipCode: "62704",
+     *     department: "Engineering"
+     *   },
+     *   {
+     *     firstName: "Jane",
+     *     lastName: "Smith",
+     *     birthDate: "1990-08-20",
+     *     startDate: "2022-02-15",
+     *     street: "456 Elm St",
+     *     city: "Shelbyville",
+     *     state: "Indiana",
+     *     zipCode: "46176",
+     *     department: "Marketing"
+     *   }
+     * ]
+     */
+    employees: PropTypes.arrayOf(PropTypes.object),
+
+    /**
+     * setEmployee: Une fonction pour mettre à jour la liste des employés.
+     * Exemple :
+     * const setEmployee = (newEmployees) => {
+     *   console.log('Updating employees:', newEmployees);
+     * };
+     */
+    setEmployee: PropTypes.func,
+
+    /**
+     * showModal: Un booléen indiquant si la modal est visible.
+     * Exemple :
+     * const showModal = true; // ou false selon l'état
+     */
+    showModal: PropTypes.bool,
+
+    /**
+     * handleSubmit: Une fonction de gestion de soumission du formulaire.
+     * Exemple :
+     * const handleSubmit = (callback) => {
+     *   return (event) => {
+     *     event.preventDefault();
+     *     const formData = {
+     *       firstName: "John",
+     *       lastName: "Doe",
+     *       birthDate: "1985-05-15",
+     *       startDate: "2021-01-01",
+     *       street: "123 Main St",
+     *       city: "Springfield",
+     *       state: "Illinois",
+     *       zipCode: "62704",
+     *       department: "Engineering"
+     *     };
+     *     callback(formData);
+     *   };
+     * };
+     */
+    handleSubmit: PropTypes.func,
+
+    /**
+     * control: Un objet pour contrôler les éléments du formulaire.
+     * Exemple :
+     * const control = {
+     *   someControlMethod: () => {
+     *     console.log('Control method called');
+     *   }
+     * };
+     */
+    control: PropTypes.object,
+
+    /**
+     * register: Une fonction pour enregistrer les champs de formulaire.
+     * Exemple :
+     * const register = (name, options) => {
+     *   return {
+     *     name,
+     *     onChange: (event) => {
+     *       console.log(`${name} changed:`, event.target.value);
+     *     },
+     *     ...options
+     *   };
+     * };
+     */
+    register: PropTypes.func
 };

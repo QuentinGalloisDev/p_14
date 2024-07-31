@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react'
-import styles from '../Styles/Tab.module.css'
+import PropTypes from 'prop-types';
 import { Grid } from "gridjs";
 import "gridjs/dist/theme/mermaid.css";
 import { EmployeeContext } from '../Context/EmployeeProvider'; // Importer le contexte
@@ -66,3 +66,63 @@ export const EmployeeList = () => {
         </div>
     )
 }
+
+EmployeeList.propTypes = {
+    /**
+     * employees: Un tableau d'objets représentant les employés.
+     * Exemple :
+     * [
+     *   {
+     *     firstName: "John",
+     *     lastName: "Doe",
+     *     startDate: "2021-01-01",
+     *     department: "Engineering",
+     *     birthDate: "1985-05-15",
+     *     street: "123 Main St",
+     *     city: "Springfield",
+     *     state: "Illinois",
+     *     zipCode: "62704"
+     *   },
+     *   {
+     *     firstName: "Jane",
+     *     lastName: "Smith",
+     *     startDate: "2022-02-15",
+     *     department: "Marketing",
+     *     birthDate: "1990-08-20",
+     *     street: "456 Elm St",
+     *     city: "Shelbyville",
+     *     state: "Indiana",
+     *     zipCode: "46176"
+     *   }
+     * ]
+     */
+    employees: PropTypes.arrayOf(PropTypes.shape({
+        firstName: PropTypes.string.isRequired,
+        lastName: PropTypes.string.isRequired,
+        startDate: PropTypes.string.isRequired,
+        department: PropTypes.string.isRequired,
+        birthDate: PropTypes.string.isRequired,
+        street: PropTypes.string.isRequired,
+        city: PropTypes.string.isRequired,
+        state: PropTypes.string.isRequired,
+        zipCode: PropTypes.string.isRequired
+    })),
+
+    /**
+     * entries: Un nombre indiquant la limite de pagination.
+     * Exemple :
+     * const entries = 10; // ou 25, 50, 100 selon la sélection
+     */
+    entries: PropTypes.number,
+
+    /**
+     * setEntries: Une fonction pour mettre à jour la limite de pagination.
+     * Exemple :
+     * const setEntries = (newEntries) => {
+     *   console.log('Updating entries:', newEntries);
+     *   // Exemple d'utilisation avec useState:
+     *   // setEntries(newEntries);
+     * };
+     */
+    setEntries: PropTypes.func
+};

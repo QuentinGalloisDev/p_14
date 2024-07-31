@@ -6,13 +6,15 @@ import { Footer } from '../Componnents/Footer';
 export const Error = () => {
     const error = useRouteError();
     return (
-        <div className={styles.error}>
+        <div>
             <Header></Header>
-            <h1>Oops!</h1>
-            <p>Sorry, an unexpected error has occurred.</p>
-            <p>
-                <i>{error.statusText || error.message}</i>
-            </p>
+            <div className={styles.error}>
+                <h1>Oops!</h1>
+                <p>Sorry, an unexpected error has occurred.</p>
+                <p>
+                    <i>{error.statusText || error.message}</i>
+                </p>
+            </div>
             <Footer />
         </div>
     )

@@ -1,5 +1,4 @@
 import './App.css';
-// import { Counter } from './counter';
 import {
   createBrowserRouter,
   RouterProvider,
@@ -39,3 +38,4 @@ function App() {
 }
 
 export default App;
+
